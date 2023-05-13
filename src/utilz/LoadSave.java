@@ -19,6 +19,9 @@ public class LoadSave {
     public static final String URM_BUTTONS = "Urm_buttons.png";
     public static final String VOLUME_BUTTONS = "Volume_buttons.png";
     public static final String MENU_BACKGROUND_IMG = "Background_menu.png";
+    public static final String PLAYING_BACKGROUND_IMG = "Playing_bg_img.png";
+    public static final String BIG_CLOUDS = "Big_clouds.png";
+    public static final String SMALL_CLOUDS = "Small_clouds.png";
 
     public static BufferedImage GetSpriteAtlas(String fileName) {
 
