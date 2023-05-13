@@ -67,7 +67,7 @@ public class Menu extends State implements Statemethods {
 	}
 
 	@Override
-	public void mouseRelease(MouseEvent e) {
+	public void mouseReleased(MouseEvent e) {
 		for (MenuButton mb : buttons) {
 			if (isIn(e, mb)) {
 				if (mb.isMousePressed())
@@ -85,7 +85,7 @@ public class Menu extends State implements Statemethods {
 	}
 
 	@Override
-	public void mouseMove(MouseEvent e) {
+	public void mouseMoved(MouseEvent e) {
 		for (MenuButton mb : buttons)
 			mb.setMouseOver(false);
 		for (MenuButton mb : buttons)
