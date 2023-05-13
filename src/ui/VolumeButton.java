@@ -13,7 +13,9 @@ public class VolumeButton extends PauseButton {
     private BufferedImage slider;
     private int index = 0;
     private boolean mouseOver, mousePressed;
-    private int buttonX, minX, maxX;
+    private final int minX;
+    private final int maxX;
+    private int buttonX;
 
     public VolumeButton(int x, int y, int width, int height) {
         super(x + width / 2, y, VOLUME_WIDTH, height);
