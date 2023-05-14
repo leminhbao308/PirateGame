@@ -58,7 +58,7 @@ public class LoadSave {
                 Color color = new Color(img.getRGB(j, i));
                 int value = color.getGreen();
                 if (value == CRABBY)
-                    list.add(new Crabby(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                    list.add(new Crabby(j * Game.TILES_SIZE, i * Game.TILES_SIZE));
             }
         }
         return list;
