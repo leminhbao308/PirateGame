@@ -29,6 +29,7 @@ public class LoadSave {
     public static final String BIG_CLOUDS = "Big_clouds.png";
     public static final String SMALL_CLOUDS = "Small_clouds.png";
     public static final String CRABBY_SPRITE = "Crabby_sprite.png";
+    public static final String STATUS_BAR = "Health_power_bar.png";
 
     public static BufferedImage GetSpriteAtlas(String fileName) {
 

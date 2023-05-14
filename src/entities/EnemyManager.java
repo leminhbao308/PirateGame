@@ -4,6 +4,7 @@ import gamestate.Playing;
 import utilz.LoadSave;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -27,7 +28,8 @@ public class EnemyManager {
 
     public void update(int[][] lvlData, Player player) {
         for (Crabby crabby : crabbies) {
-            crabby.update(lvlData, player);
+            if (crabby.isActive())
+                crabby.update(lvlData, player);
         }
     }
 
@@ -37,8 +39,26 @@ public class EnemyManager {
 
     private void drawCrabs(Graphics g, int xLvlOffset) {
         for (Crabby crabby : crabbies) {
-            g.drawImage(crabbyArr[crabby.getEnemyState()][crabby.getAniIndex()], (int) (crabby.getHitbox().x - CRABBY_DRAW_OFFSET_X) - xLvlOffset, (int) (crabby.getHitbox().y - CRABBY_DRAW_OFFSET_Y), CRABBY_WIDTH, CRABBY_HEIGHT, null);
-            crabby.drawHitbox(g, xLvlOffset);
+            if (crabby.isActive()) {
+                g.drawImage(crabbyArr[crabby.getEnemyState()][crabby.getAniIndex()],
+                        (int) (crabby.getHitbox().x - xLvlOffset - CRABBY_DRAW_OFFSET_X) + crabby.flipX(),
+                        (int) (crabby.getHitbox().y - CRABBY_DRAW_OFFSET_Y),
+                        CRABBY_WIDTH * crabby.flipW(),
+                        CRABBY_HEIGHT, null);
+//            crabby.drawHitbox(g, xLvlOffset);
+//                crabby.drawAttackBox(g, xLvlOffset);
+            }
+        }
+    }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox) {
+        for (Crabby crabby : crabbies) {
+            if (crabby.isActive()) {
+                if (attackBox.intersects(crabby.getHitbox())) {
+                    crabby.hurt(10);
+                    return;
+                }
+            }
         }
     }
 
@@ -49,6 +69,12 @@ public class EnemyManager {
             for (int j = 0; j < crabbyArr[i].length; j++) {
                 crabbyArr[i][j] = temp.getSubimage(j * CRABBY_WIDTH_DEFAULT, i * CRABBY_HEIGHT_DEFAULT, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT);
             }
+        }
+    }
+
+    public void resetAllEnemies() {
+        for (Crabby crabby : crabbies) {
+            crabby.resetEnemy();
         }
     }
 }
