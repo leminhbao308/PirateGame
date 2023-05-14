@@ -15,7 +15,7 @@ public class Game implements Runnable {
 	public static final int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
 	public static final int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
 	public static final int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
-	private final int FPS_SET = 165;
+	private final int FPS_SET = 200;
 	private final int UPS_SET = 200;
 	@SuppressWarnings("unused")
 	private GameWindow gameWindow;
@@ -30,6 +30,7 @@ public class Game implements Runnable {
 
 		gamePanel = new GamePanel(this);
 		gameWindow = new GameWindow(gamePanel);
+		gamePanel.setFocusable(true);
 		gamePanel.requestFocus();
 
 		startGameLoop();
