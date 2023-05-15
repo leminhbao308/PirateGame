@@ -1,5 +1,6 @@
 package object;
 
+import entities.Player;
 import gamestate.Playing;
 import levels.Level;
 import utilz.LoadSave;
@@ -15,12 +16,22 @@ public class ObjectManager {
 
     private Playing playing;
     private BufferedImage[][] potionImgs, containerImgs;
+    private BufferedImage spikeImg;
     private ArrayList<Potion> potions;
     private ArrayList<GameContainer> containers;
+    private ArrayList<Spike> spikes;
 
     public ObjectManager(Playing playing) {
         this.playing = playing;
         loadImgs();
+    }
+
+    public void checkSpikesTouched(Player player) {
+        for (Spike spike : spikes) {
+            if (spike.getHitbox().intersects(player.getHitbox())) {
+                player.kill();
+            }
+        }
     }
 
     public void checkObjectTouched(Rectangle2D.Float hitbox) {
@@ -63,6 +74,7 @@ public class ObjectManager {
     public void loadObjects(Level newLevel) {
         potions = new ArrayList<>(newLevel.getPotions());
         containers = new ArrayList<>(newLevel.getContainers());
+        spikes = newLevel.getSpikes();
     }
 
     private void loadImgs() {
@@ -80,6 +92,7 @@ public class ObjectManager {
                 containerImgs[i][j] = containerSprite.getSubimage(j * 40, i * 30, 40, 30);
             }
         }
+        spikeImg = LoadSave.GetSpriteAtlas(LoadSave.TRAP_ATLAS);
     }
 
     public void update() {
@@ -94,6 +107,7 @@ public class ObjectManager {
     public void draw(Graphics g, int xLvlOffset) {
         drawPotions(g, xLvlOffset);
         drawContainers(g, xLvlOffset);
+        drawSpikes(g, xLvlOffset);
     }
 
     private void drawPotions(Graphics g, int xLvlOffset) {
@@ -122,6 +136,16 @@ public class ObjectManager {
                         (int) (container.getHitbox().y - container.getyDrawOffset()),
                         CONTAINER_WIDTH, CONTAINER_HEIGHT, null);
             }
+        }
+    }
+
+    private void drawSpikes(Graphics g, int xLvlOffset) {
+        for (Spike spike : spikes) {
+            g.drawImage(spikeImg,
+                    (int) (spike.getHitbox().x - xLvlOffset),
+                    (int) (spike.getHitbox().y - spike.getyDrawOffset()),
+                    SPIKE_WIDTH, SPIKE_HEIGHT, null);
+
         }
     }
 
