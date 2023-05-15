@@ -12,18 +12,22 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static utilz.Constants.ObjectConstants.*;
+import static utilz.Constants.ProjectTiles.CANNON_BALL_HEIGHT;
+import static utilz.Constants.ProjectTiles.CANNON_BALL_WIDTH;
 import static utilz.HelpMethods.CanCannonSeePLayer;
+import static utilz.HelpMethods.IsProjectTileHittingLevel;
 
 public class ObjectManager {
 
     private Playing playing;
     private BufferedImage[][] potionImgs, containerImgs;
     private BufferedImage[] cannonImgs;
-    private BufferedImage spikeImg;
+    private BufferedImage spikeImg, cannonBallImg;
     private ArrayList<Potion> potions;
     private ArrayList<GameContainer> containers;
     private ArrayList<Spike> spikes;
     private ArrayList<Cannon> cannons;
+    private ArrayList<ProjectTile> projectTiles = new ArrayList<ProjectTile>();
 
     public ObjectManager(Playing playing) {
         this.playing = playing;
@@ -80,6 +84,7 @@ public class ObjectManager {
         containers = new ArrayList<>(newLevel.getContainers());
         spikes = newLevel.getSpikes();
         cannons = newLevel.getCannons();
+        projectTiles.clear();
     }
 
     private void loadImgs() {
@@ -104,6 +109,8 @@ public class ObjectManager {
         for (int i = 0; i < cannonImgs.length; i++) {
             cannonImgs[i] = temp.getSubimage(i * 40, 0, 40, 26);
         }
+
+        cannonBallImg = LoadSave.GetSpriteAtlas(LoadSave.CANNON_BALL);
     }
 
     public void update(int[][] lvlData, Player player) {
@@ -116,6 +123,7 @@ public class ObjectManager {
                 container.update();
         }
         updateCannons(lvlData, player);
+        updateProjectTiles(lvlData, player);
     }
 
     private boolean isPlayerInRange(Cannon cannon, Player player) {
@@ -123,29 +131,49 @@ public class ObjectManager {
         return absValue <= Game.TILES_SIZE * 5;
     }
 
-    private boolean isPLayerInfontOfCannon(Cannon cannon, Player player) {
-        if (cannon.getObjType() == CANNON_LEFT)
+    private boolean isPLayerInFrontOfCannon(Cannon cannon, Player player) {
+        if (cannon.getObjType() == CANNON_LEFT) {
             if (cannon.getHitbox().x > player.getHitbox().x)
                 return true;
-            else if (cannon.getHitbox().x < player.getHitbox().x)
-                return true;
+        } else if (cannon.getHitbox().x < player.getHitbox().x)
+            return true;
         return false;
     }
 
     private void updateCannons(int[][] lvlData, Player player) {
         for (Cannon cannon : cannons) {
-//            if (cannon.doAnimation)
-            if (cannon.getTileY() == player.getTileY())
-                if (isPlayerInRange(cannon, player))
-                    if (isPLayerInfontOfCannon(cannon, player))
-                        if (CanCannonSeePLayer(lvlData, player.getHitbox(), cannon.getHitbox(), cannon.getTileY()))
-                            shootCannon(cannon);
+            if (!cannon.doAnimation)
+                if (cannon.getTileY() == player.getTileY())
+                    if (isPlayerInRange(cannon, player))
+                        if (isPLayerInFrontOfCannon(cannon, player))
+                            if (CanCannonSeePLayer(lvlData, player.getHitbox(), cannon.getHitbox(), cannon.getTileY()))
+                                cannon.setAnimation(true);
             cannon.update();
+            if (cannon.getAnimationIndex() == 4 && cannon.getAnimationTick() == 0)
+                shootCannon(cannon);
+        }
+    }
+
+    private void updateProjectTiles(int[][] lvlData, Player player) {
+        for (ProjectTile projectTile : projectTiles) {
+            if (projectTile.isActive()) {
+                projectTile.updatePosition();
+            }
+            if (projectTile.getHitbox().intersects(player.getHitbox())) {
+                player.changeHealth(-25);
+                projectTile.setActive(false);
+            } else if (IsProjectTileHittingLevel(projectTile, lvlData)) {
+                projectTile.setActive(false);
+            }
         }
     }
 
     private void shootCannon(Cannon cannon) {
         cannon.setAnimation(true);
+        int direction = 1;
+        if (cannon.getObjType() == CANNON_LEFT)
+            direction = -1;
+        projectTiles.add(new ProjectTile((int) (cannon.getHitbox().x), (int) (cannon.getHitbox().y), direction));
     }
 
     public void draw(Graphics g, int xLvlOffset) {
@@ -153,6 +181,7 @@ public class ObjectManager {
         drawContainers(g, xLvlOffset);
         drawSpikes(g, xLvlOffset);
         drawCannons(g, xLvlOffset);
+        drawProjectTiles(g, xLvlOffset);
     }
 
     private void drawPotions(Graphics g, int xLvlOffset) {
@@ -206,6 +235,16 @@ public class ObjectManager {
                     x,
                     (int) (cannon.getHitbox().y),
                     width, CANNON_HEIGHT, null);
+        }
+    }
+
+    private void drawProjectTiles(Graphics g, int xLvlOffset) {
+        for (ProjectTile projectTile : projectTiles) {
+            if (projectTile.isActive())
+                g.drawImage(cannonBallImg,
+                        (int) (projectTile.getHitbox().x - xLvlOffset),
+                        (int) (projectTile.getHitbox().y),
+                        CANNON_BALL_WIDTH, CANNON_BALL_HEIGHT, null);
         }
     }
 
