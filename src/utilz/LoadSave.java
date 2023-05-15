@@ -28,6 +28,9 @@ public class LoadSave {
     public static final String STATUS_BAR = "Health_power_bar.png";
     public static final String COMPLETED_IMG = "Completed_sprite.png";
 
+    public static final String POTION_ATLAS = "Potions_sprites.png";
+    public static final String CONTAINER_ATLAS = "Objects_sprites.png";
+
     public static BufferedImage GetSpriteAtlas(String fileName) {
 
         BufferedImage img = null;
@@ -60,7 +63,7 @@ public class LoadSave {
         File[] filesSorted = new File[files.length];
         for (int i = 0; i < filesSorted.length; i++) {
             for (int j = 0; j < files.length; j++) {
-                if (files[j].getName().equals("" + (i + 1) + ".png"))
+                if (files[j].getName().equals((i + 1) + ".png"))
                     filesSorted[i] = files[j];
             }
         }

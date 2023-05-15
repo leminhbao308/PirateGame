@@ -13,6 +13,7 @@ import static utilz.Constants.GRAVITY;
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.HelpMethods.*;
 
+@SuppressWarnings("ALL")
 public class Player extends Entity {
 
     private BufferedImage[][] animation;
@@ -21,36 +22,35 @@ public class Player extends Entity {
     private boolean left, right, jump;
 
     private int[][] lvlData;
-    private float xDrawOffset = 21 * Game.SCALE;
-    private float yDrawOffset = 4 * Game.SCALE;
+    private final float xDrawOffset = 21 * Game.SCALE;
+    private final float yDrawOffset = 4 * Game.SCALE;
 
     // Jumping Gravity
-    private float jumpSpeed = -2.25f * Game.SCALE;
-    private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
+    private final float jumpSpeed = -2.25f * Game.SCALE;
+    private final float fallSpeedAfterCollision = 0.5f * Game.SCALE;
 
 
     //Status bar UI
     private BufferedImage statusBarImg;
 
-    private int statusBarWidth = (int) (192 * Game.SCALE);
-    private int statusBarHeight = (int) (58 * Game.SCALE);
-    private int statusBarX = (int) (10 * Game.SCALE);
-    private int statusBarY = (int) (10 * Game.SCALE);
+    private final int statusBarWidth = (int) (192 * Game.SCALE);
+    private final int statusBarHeight = (int) (58 * Game.SCALE);
+    private final int statusBarX = (int) (10 * Game.SCALE);
+    private final int statusBarY = (int) (10 * Game.SCALE);
 
-    private int healthBarWidth = (int) (150 * Game.SCALE);
-    private int healthBarHeight = (int) (4 * Game.SCALE);
-    private int healthBarXStart = (int) (34 * Game.SCALE);
-    private int healthBarYStart = (int) (14 * Game.SCALE);
+    private final int healthBarWidth = (int) (150 * Game.SCALE);
+    private final int healthBarHeight = (int) (4 * Game.SCALE);
+    private final int healthBarXStart = (int) (34 * Game.SCALE);
+    private final int healthBarYStart = (int) (14 * Game.SCALE);
 
 
     private int healthWidth = healthBarWidth;
 
 
-
     private int flipX = 0;
     private int flipW = 1;
     private boolean attackChecked;
-    private Playing playing;
+    private final Playing playing;
 
     public Player(float x, float y, int width, int height, Playing playing) {
         super(x, y, width, height);
@@ -83,10 +83,16 @@ public class Player extends Entity {
         }
         updateAttackBox();
         updatePosition();
+        if (moving)
+            checkPotionTouched();
         if (attacking)
             checkAttack();
         updateAnimationTick();
         setAnimation();
+    }
+
+    private void checkPotionTouched() {
+        playing.checkPotionTouched(hitbox);
     }
 
     private void checkAttack() {
@@ -94,6 +100,7 @@ public class Player extends Entity {
             return;
         attackChecked = true;
         playing.checkEnemyHit(attackBox);
+        playing.checkObjectHit(attackBox);
     }
 
     private void updateAttackBox() {
@@ -252,6 +259,10 @@ public class Player extends Entity {
             //gameOver();
         } else if (currentHealth >= maxHeath)
             currentHealth = maxHeath;
+    }
+
+    public void changePower(int bluePotionValue) {
+        System.out.println("Added Power!");
     }
 
     private void loadAnimation() {

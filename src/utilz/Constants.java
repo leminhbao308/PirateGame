@@ -7,6 +7,34 @@ public class Constants {
     public static final float GRAVITY = 0.04f * Game.SCALE;
     public static final int ANIMATION_SPEED = 25;
 
+    public static class ObjectConstants {
+        public static final int RED_POTION = 0;
+        public static final int BLUE_POTION = 1;
+        public static final int BARREL = 2;
+        public static final int BOX = 3;
+
+        public static final int RED_POTION_VALUE = 15;
+        public static final int BLUE_POTION_VALUE = 10;
+
+        public static final int CONTAINER_WIDTH_DEFAULT = 40;
+        public static final int CONTAINER_HEIGHT_DEFAULT = 30;
+        public static final int CONTAINER_WIDTH = (int) (CONTAINER_WIDTH_DEFAULT * Game.SCALE);
+        public static final int CONTAINER_HEIGHT = (int) (CONTAINER_HEIGHT_DEFAULT * Game.SCALE);
+
+        public static final int POTION_WIDTH_DEFAULT = 12;
+        public static final int POTION_HEIGHT_DEFAULT = 16;
+        public static final int POTION_WIDTH = (int) (POTION_WIDTH_DEFAULT * Game.SCALE);
+        public static final int POTION_HEIGHT = (int) (POTION_HEIGHT_DEFAULT * Game.SCALE);
+
+        public static int GetSpriteAmount(int object_type) {
+            return switch (object_type) {
+                case ObjectConstants.RED_POTION, ObjectConstants.BLUE_POTION -> 7;
+                case ObjectConstants.BARREL, ObjectConstants.BOX -> 8;
+                default -> 1;
+            };
+        }
+    }
+
     public static class EnemyConstants {
         public static final int CRABBY = 0;
 
@@ -46,21 +74,17 @@ public class Constants {
         }
 
         public static int GetMaxHealth(int enemy_type) {
-            switch (enemy_type) {
-                case CRABBY:
-                    return 10;
-                default:
-                    return 0;
-            }
+            return switch (enemy_type) {
+                case CRABBY -> 10;
+                default -> 0;
+            };
         }
 
         public static int GetEnemyDamage(int enemy_type) {
-            switch (enemy_type) {
-                case CRABBY:
-                    return 15;
-                default:
-                    return 0;
-            }
+            return switch (enemy_type) {
+                case CRABBY -> 15;
+                default -> 0;
+            };
         }
     }
 
@@ -108,9 +132,7 @@ public class Constants {
 
     public static class Directions {
         public static final int LEFT = 0;
-        public static final int UP = 1;
         public static final int RIGHT = 2;
-        public static final int DOWN = 3;
     }
 
     public static class PlayerConstants {
@@ -123,25 +145,15 @@ public class Constants {
         public static final int DEAD = 6;
 
         public static int GetSpriteAmount(int player_action) {
-            switch (player_action) {
-
-                case IDLE:
-                    return 5;
-                case RUNNING:
-                    return 6;
-                case JUMP:
-                    return 3;
-                case FALLING:
-                    return 1;
-                case HIT:
-                    return 4;
-                case ATTACK:
-                    return 3;
-                case DEAD:
-                    return 8;
-                default:
-                    return 0;
-            }
+            return switch (player_action) {
+                case IDLE -> 5;
+                case RUNNING -> 6;
+                case JUMP, ATTACK -> 3;
+                case FALLING -> 1;
+                case HIT -> 4;
+                case DEAD -> 8;
+                default -> 0;
+            };
         }
     }
 }
